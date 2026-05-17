@@ -1,0 +1,47 @@
+.apply-leave-page {
+  max-width: 860px;
+}
+
+.apply-leave-page .card {
+  border-radius: 1.75rem;
+}
+
+.apply-leave-page .card-title {
+  font-size: 1.75rem;
+}
+
+.apply-leave-page .section-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.apply-leave-page .section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.apply-leave-page .form-label-top {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #475569;
+}
+
+.apply-leave-page .form-input {
+  min-height: 3.3rem;
+  border-radius: 0.95rem;
+}
+
+.apply-leave-page .btn {
+  min-width: 10rem;
+}
+
+@media (max-width: 767px) {
+  .apply-leave-page .card-body {
+    padding: 1.5rem;
+  }
+}

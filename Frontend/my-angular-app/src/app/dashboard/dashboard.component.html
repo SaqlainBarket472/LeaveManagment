@@ -1,0 +1,15 @@
+<h2>Leave Dashboard</h2>
+
+<table border="1">
+  <tr>
+    <th>Start</th>
+    <th>End</th>
+    <th>Status</th>
+  </tr>
+
+  <tr *ngFor="let l of leaves">
+    <td>{{l.startDate}}</td>
+    <td>{{l.endDate}}</td>
+    <td>{{l.status}}</td>
+  </tr>
+</table>

@@ -1,0 +1,54 @@
+<div class="apply-leave-page container py-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4 p-md-5">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+        <div>
+          <h2 class="card-title mb-1">Apply for Leave</h2>
+          <p class="text-muted mb-0">Complete your request details below and submit for approval.</p>
+        </div>
+        <span class="badge rounded-pill bg-primary px-3 py-2">Leave Form</span>
+      </div>
+
+      <div class="section-header mb-4">
+        <h5 class="section-title mb-1">Leave request information</h5>
+        <p class="text-muted mb-0">Use the form fields below to provide your leave dates and reason.</p>
+      </div>
+
+      <form class="row gx-4 gy-4" (ngSubmit)="submit()">
+        <div class="col-md-6">
+          <label class="form-label form-label-top">Leave type</label>
+          <select class="form-select form-input" [(ngModel)]="model.leaveTypeId" name="leaveTypeId" required>
+            <option [value]="1">Casual Leave</option>
+            <option [value]="2">Sick Leave</option>
+            <option [value]="3">Personal Leave</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label form-label-top">Employee ID</label>
+          <input class="form-control form-input" type="number" [(ngModel)]="model.employeeId" name="employeeId" min="1" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label form-label-top">Start date</label>
+          <input class="form-control form-input" type="date" [(ngModel)]="model.startDate" name="startDate" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label form-label-top">End date</label>
+          <input class="form-control form-input" type="date" [(ngModel)]="model.endDate" name="endDate" required>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label form-label-top">Reason for leave</label>
+          <textarea class="form-control form-input" rows="5" [(ngModel)]="model.reason" name="reason" placeholder="Enter a short reason" required></textarea>
+        </div>
+
+        <div class="col-12 d-flex flex-column flex-sm-row justify-content-end gap-2 pt-2">
+          <button type="reset" class="btn btn-outline-secondary">Reset</button>
+          <button type="submit" class="btn btn-primary">Submit request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<h2>Approval Page</h2>
+
+<table border="1">
+  <tr>
+    <th>Start</th>
+    <th>End</th>
+    <th>Action</th>
+  </tr>
+
+  <tr *ngFor="let r of requests">
+    <td>{{r.startDate}}</td>
+    <td>{{r.endDate}}</td>
+    <td>
+      <button (click)="approve(r.id)">Approve</button>
+      <button (click)="reject(r.id)">Reject</button>
+    </td>
+  </tr>
+</table>

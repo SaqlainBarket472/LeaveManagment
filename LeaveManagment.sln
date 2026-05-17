@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaveManagment", "LeaveManagment\LeaveManagment.csproj", "{FFCE4C49-B01E-4702-86B0-C92A8B4BC5B1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{5B5FF551-B952-46A0-AD78-484462752A4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaveManagement.Domain", "LeaveManagement.Domain\LeaveManagement.Domain.csproj", "{592F67B0-78E2-4BF1-ACD4-9729CAD78103}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{47B3B3A4-CE43-4A7F-B470-5C383170B472}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaveManagement.Application", "LeaveManagement.Application\LeaveManagement.Application.csproj", "{6410150D-D47F-4461-BA69-3E51388A7A23}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{B291F1C4-DA24-4929-ADE4-80E1A21B3E5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaveManagement.Infrastructure", "LeaveManagement.Infrastructure\LeaveManagement.Infrastructure.csproj", "{7DE75A11-2A3F-427C-B139-7E65CDC944D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{D54BA92C-6B22-4D2F-B91B-8ED5E2D3EF80}"
+	ProjectSection(SolutionItems) = preProject
+		Frontend\my-angular-app\.editorconfig = Frontend\my-angular-app\.editorconfig
+		Frontend\my-angular-app\.gitignore = Frontend\my-angular-app\.gitignore
+		Frontend\my-angular-app\.prettierrc = Frontend\my-angular-app\.prettierrc
+		Frontend\my-angular-app\angular.json = Frontend\my-angular-app\angular.json
+		Frontend\my-angular-app\package-lock.json = Frontend\my-angular-app\package-lock.json
+		Frontend\my-angular-app\package.json = Frontend\my-angular-app\package.json
+		Frontend\my-angular-app\README.md = Frontend\my-angular-app\README.md
+		Frontend\my-angular-app\tsconfig.app.json = Frontend\my-angular-app\tsconfig.app.json
+		Frontend\my-angular-app\tsconfig.json = Frontend\my-angular-app\tsconfig.json
+		Frontend\my-angular-app\tsconfig.spec.json = Frontend\my-angular-app\tsconfig.spec.json
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFCE4C49-B01E-4702-86B0-C92A8B4BC5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFCE4C49-B01E-4702-86B0-C92A8B4BC5B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFCE4C49-B01E-4702-86B0-C92A8B4BC5B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFCE4C49-B01E-4702-86B0-C92A8B4BC5B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{592F67B0-78E2-4BF1-ACD4-9729CAD78103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{592F67B0-78E2-4BF1-ACD4-9729CAD78103}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{592F67B0-78E2-4BF1-ACD4-9729CAD78103}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{592F67B0-78E2-4BF1-ACD4-9729CAD78103}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6410150D-D47F-4461-BA69-3E51388A7A23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6410150D-D47F-4461-BA69-3E51388A7A23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6410150D-D47F-4461-BA69-3E51388A7A23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6410150D-D47F-4461-BA69-3E51388A7A23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DE75A11-2A3F-427C-B139-7E65CDC944D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DE75A11-2A3F-427C-B139-7E65CDC944D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DE75A11-2A3F-427C-B139-7E65CDC944D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DE75A11-2A3F-427C-B139-7E65CDC944D2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{592F67B0-78E2-4BF1-ACD4-9729CAD78103} = {5B5FF551-B952-46A0-AD78-484462752A4D}
+		{6410150D-D47F-4461-BA69-3E51388A7A23} = {47B3B3A4-CE43-4A7F-B470-5C383170B472}
+		{7DE75A11-2A3F-427C-B139-7E65CDC944D2} = {B291F1C4-DA24-4929-ADE4-80E1A21B3E5F}
+	EndGlobalSection
+EndGlobal

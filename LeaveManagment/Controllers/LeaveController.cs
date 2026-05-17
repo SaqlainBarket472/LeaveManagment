@@ -1,0 +1,40 @@
+﻿using LeaveManagement.Application.DTOs;
+using LeaveManagement.Application.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LeaveManagment.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class LeaveController : ControllerBase
+    {
+        private readonly LeaveService _service;
+
+        public LeaveController(LeaveService service)
+        {
+            _service = service;
+        }
+
+        [HttpPost("apply")]
+        public async Task<IActionResult> Apply(ApplyLeaveDto dto)
+        {
+            var result = await _service.ApplyLeaveAsync(dto);
+            return Ok(result);
+        }
+
+        [HttpPost("approve/{id}")]
+        public async Task<IActionResult> Approve(int id)
+        {
+            await _service.ApproveLeaveAsync(id);
+            return Ok("Approved");
+        }
+
+        [HttpPost("reject/{id}")]
+        public async Task<IActionResult> Reject(int id)
+        {
+            await _service.RejectLeaveAsync(id);
+            return Ok("Rejected");
+        }
+    }
+}
