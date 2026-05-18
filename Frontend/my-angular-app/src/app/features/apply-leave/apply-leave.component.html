@@ -1,4 +1,17 @@
 <div class="apply-leave-page container py-4">
+  <!-- Toast Container -->
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+    <div *ngFor="let toast of toasts" [ngClass]="'toast show alert alert-' + (toast.type === 'success' ? 'success' : 'danger')" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">{{ toast.type === 'success' ? '✓ Success' : '✕ Error' }}</strong>
+        <button type="button" class="btn-close" (click)="removeToast(toast.id)" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        {{ toast.message }}
+      </div>
+    </div>
+  </div>
+
   <div class="card shadow-sm border-0">
     <div class="card-body p-4 p-md-5">
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
@@ -17,7 +30,7 @@
       <form class="row gx-4 gy-4" (ngSubmit)="submit()">
         <div class="col-md-6">
           <label class="form-label form-label-top">Leave type</label>
-          <select class="form-select form-input" [(ngModel)]="model.leaveTypeId" name="leaveTypeId" required>
+          <select class="form-select form-input" [(ngModel)]="model.leaveTypeId" name="leaveTypeId" [disabled]="isLoading" required>
             <option [value]="1">Casual Leave</option>
             <option [value]="2">Sick Leave</option>
             <option [value]="3">Personal Leave</option>
@@ -26,27 +39,30 @@
 
         <div class="col-md-6">
           <label class="form-label form-label-top">Employee ID</label>
-          <input class="form-control form-input" type="number" [(ngModel)]="model.employeeId" name="employeeId" min="1" required>
+          <input class="form-control form-input" type="number" [(ngModel)]="model.employeeId" name="employeeId" [disabled]="isLoading" min="1" required>
         </div>
 
         <div class="col-md-6">
           <label class="form-label form-label-top">Start date</label>
-          <input class="form-control form-input" type="date" [(ngModel)]="model.startDate" name="startDate" required>
+          <input class="form-control form-input" type="date" [(ngModel)]="model.startDate" name="startDate" [disabled]="isLoading" required>
         </div>
 
         <div class="col-md-6">
           <label class="form-label form-label-top">End date</label>
-          <input class="form-control form-input" type="date" [(ngModel)]="model.endDate" name="endDate" required>
+          <input class="form-control form-input" type="date" [(ngModel)]="model.endDate" name="endDate" [disabled]="isLoading" required>
         </div>
 
         <div class="col-12">
           <label class="form-label form-label-top">Reason for leave</label>
-          <textarea class="form-control form-input" rows="5" [(ngModel)]="model.reason" name="reason" placeholder="Enter a short reason" required></textarea>
+          <textarea class="form-control form-input" rows="5" [(ngModel)]="model.reason" name="reason" [disabled]="isLoading" placeholder="Enter a short reason" required></textarea>
         </div>
 
         <div class="col-12 d-flex flex-column flex-sm-row justify-content-end gap-2 pt-2">
-          <button type="reset" class="btn btn-outline-secondary">Reset</button>
-          <button type="submit" class="btn btn-primary">Submit request</button>
+          <button type="reset" class="btn btn-outline-secondary" [disabled]="isLoading">Reset</button>
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ isLoading ? 'Submitting...' : 'Submit request' }}
+          </button>
         </div>
       </form>
     </div>

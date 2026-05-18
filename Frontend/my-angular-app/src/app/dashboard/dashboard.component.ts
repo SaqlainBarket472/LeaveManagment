@@ -12,7 +12,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   leaves: any[] = [];
   filteredLeaves: any[] = [];
@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
   };
 
   statusOptions = ['All', 'Pending', 'Approved', 'Rejected'];
+
   leaveTypeOptions = [
     { id: 1, name: 'Casual Leave' },
     { id: 2, name: 'Sick Leave' },
@@ -39,7 +40,12 @@ export class DashboardComponent implements OnInit {
     2: 'Rejected'
   };
 
-  defaultBalances: Record<number, number> = { 1: 12, 2: 10, 3: 8 };
+  defaultBalances: Record<number, number> = {
+    1: 12,
+    2: 10,
+    3: 8
+  };
+
   private searchTerm = new Subject<string>();
   private destroy$ = new Subject<void>();
 
@@ -54,10 +60,16 @@ export class DashboardComponent implements OnInit {
       this.applyFilters();
     });
 
-    this.searchTerm.pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((term) => {
-      this.filters.search = term.trim();
-      this.applyFilters();
-    });
+    this.searchTerm
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((term) => {
+        this.filters.search = term.trim();
+        this.applyFilters();
+      });
   }
 
   applyFilters() {
@@ -65,18 +77,42 @@ export class DashboardComponent implements OnInit {
 
     this.filteredLeaves = this.leaves
       .filter((leave) => {
-        const leaveStatus = typeof leave.status === 'number' ? leave.statusLabel : leave.status;
-        const matchesStatus = this.filters.status === 'All' || leaveStatus === this.filters.status;
-        const matchesType = !this.filters.leaveTypeId || leave.leaveTypeId === +this.filters.leaveTypeId;
-        const matchesFrom = !this.filters.fromDate || new Date(leave.startDate) >= new Date(this.filters.fromDate);
-        const matchesTo = !this.filters.toDate || new Date(leave.endDate) <= new Date(this.filters.toDate);
+        const leaveStatus =
+          typeof leave.status === 'number'
+            ? leave.statusLabel
+            : leave.status;
+
+        const matchesStatus =
+          this.filters.status === 'All' ||
+          leaveStatus === this.filters.status;
+
+        const matchesType =
+          !this.filters.leaveTypeId ||
+          leave.leaveTypeId === +this.filters.leaveTypeId;
+
+        const matchesFrom =
+          !this.filters.fromDate ||
+          new Date(leave.startDate) >= new Date(this.filters.fromDate);
+
+        const matchesTo =
+          !this.filters.toDate ||
+          new Date(leave.endDate) <= new Date(this.filters.toDate);
+
         const matchesSearch =
           !searchQuery ||
           String(leave.employeeId).includes(searchQuery) ||
           String(leave.reason || '').toLowerCase().includes(searchQuery) ||
-          this.getLeaveTypeName(leave.leaveTypeId).toLowerCase().includes(searchQuery);
+          this.getLeaveTypeName(leave.leaveTypeId)
+            .toLowerCase()
+            .includes(searchQuery);
 
-        return matchesStatus && matchesType && matchesFrom && matchesTo && matchesSearch;
+        return (
+          matchesStatus &&
+          matchesType &&
+          matchesFrom &&
+          matchesTo &&
+          matchesSearch
+        );
       })
       .sort((a, b) => this.compareLeaves(a, b));
   }
@@ -85,54 +121,70 @@ export class DashboardComponent implements OnInit {
     if (this.filters.sortBy === 'status') {
       return (a.statusLabel || '').localeCompare(b.statusLabel || '');
     }
+
     if (this.filters.sortBy === 'endDate') {
-      return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+      return (
+        new Date(a.endDate).getTime() -
+        new Date(b.endDate).getTime()
+      );
     }
-    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+
+    return (
+      new Date(a.startDate).getTime() -
+      new Date(b.startDate).getTime()
+    );
   }
 
   getLeaveTypeName(typeId: number) {
-    return this.leaveTypeOptions.find((type) => type.id === typeId)?.name || 'Unknown';
+    return (
+      this.leaveTypeOptions.find((type) => type.id === typeId)?.name ||
+      'Unknown'
+    );
   }
 
   onSearchChange(value: string) {
     this.searchTerm.next(value);
   }
 
+  // ✅ SINGLE CORRECT IMPLEMENTATION
   getTypeBalance(typeId: number) {
-    const used = this.leaves.filter((leave) => Number(leave.leaveTypeId) === typeId).length;
-    return Math.max(0, (this.defaultBalances[typeId] || 0) - used);
+    const used = this.leaves.filter(
+      (leave) => Number(leave.leaveTypeId) === typeId
+    ).length;
+
+    return Math.max(
+      0,
+      (this.defaultBalances[typeId] || 0) - used
+    );
   }
 
   getTypeBalancePercent(typeId: number) {
     const available = this.defaultBalances[typeId] || 0;
     const remaining = this.getTypeBalance(typeId);
-    return available > 0 ? Math.round((remaining / available) * 100) : 0;
-  }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+    return available > 0
+      ? Math.round((remaining / available) * 100)
+      : 0;
   }
 
   getTotalBalance() {
-    const defaultBalances: Record<number, number> = { 1: 12, 2: 10, 3: 8 };
-    const usedCounts: Record<number, number> = this.leaves.reduce((acc: Record<number, number>, leave: any) => {
-      const typeId = Number(leave.leaveTypeId);
-      acc[typeId] = (acc[typeId] || 0) + 1;
-      return acc;
-    }, {});
+    const usedCounts: Record<number, number> = this.leaves.reduce(
+      (acc: Record<number, number>, leave: any) => {
+        const typeId = Number(leave.leaveTypeId);
+        acc[typeId] = (acc[typeId] || 0) + 1;
+        return acc;
+      },
+      {}
+    );
 
     return this.leaveTypeOptions.reduce((sum, type) => {
-      const remaining = Math.max(0, (defaultBalances[type.id] || 0) - (usedCounts[type.id] || 0));
+      const remaining = Math.max(
+        0,
+        (this.defaultBalances[type.id] || 0) -
+          (usedCounts[type.id] || 0)
+      );
       return sum + remaining;
     }, 0);
-  }
-
-  getTypeBalance(typeId: number) {
-    const defaultBalances: Record<number, number> = { 1: 12, 2: 10, 3: 8 };
-    const used = this.leaves.filter((leave) => Number(leave.leaveTypeId) === typeId).length;
-    return Math.max(0, (defaultBalances[typeId] || 0) - used);
   }
 
   resetFilters() {
@@ -141,8 +193,14 @@ export class DashboardComponent implements OnInit {
       leaveTypeId: '',
       fromDate: '',
       toDate: '',
-      sortBy: 'startDate'
+      sortBy: 'startDate',
+      search: '' // ✅ FIXED
     };
     this.applyFilters();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
