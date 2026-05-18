@@ -79,7 +79,9 @@
                 <th>Type</th>
                 <th>Start date</th>
                 <th>End date</th>
+                <th>Days</th>
                 <th>Status</th>
+                <th>Reason</th>
               </tr>
             </thead>
             <tbody>
@@ -88,16 +90,18 @@
                 <td>{{ getLeaveTypeName(leave.leaveTypeId) }}</td>
                 <td>{{ leave.startDate | date:'mediumDate' }}</td>
                 <td>{{ leave.endDate | date:'mediumDate' }}</td>
+                <td>{{ leave.daysRequested || leave.daysRequested === 0 ? leave.daysRequested : '-' }}</td>
                 <td>
                   <span class="badge" [ngClass]="{
-                    'bg-warning text-dark': leave.status === 'Pending',
-                    'bg-success': leave.status === 'Approved',
-                    'bg-danger': leave.status === 'Rejected'
-                  }">{{ leave.status || 'Unknown' }}</span>
+                    'bg-warning text-dark': leave.statusLabel === 'Pending',
+                    'bg-success': leave.statusLabel === 'Approved',
+                    'bg-danger': leave.statusLabel === 'Rejected'
+                  }">{{ leave.statusLabel || leave.status || 'Unknown' }}</span>
                 </td>
+                <td>{{ leave.reason || '—' }}</td>
               </tr>
               <tr *ngIf="filteredLeaves.length === 0">
-                <td colspan="5" class="text-center text-muted py-4">No leave requests match the current filters.</td>
+                <td colspan="7" class="text-center text-muted py-4">No leave requests match the current filters.</td>
               </tr>
             </tbody>
           </table>

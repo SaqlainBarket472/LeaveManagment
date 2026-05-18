@@ -30,11 +30,20 @@ export class DashboardComponent implements OnInit {
     { id: 3, name: 'Personal Leave' }
   ];
 
+  statusMap: Record<number, string> = {
+    0: 'Pending',
+    1: 'Approved',
+    2: 'Rejected'
+  };
+
   constructor(private service: LeaveService) {}
 
   ngOnInit() {
     this.service.getAll().subscribe((res: any[]) => {
-      this.leaves = res || [];
+      this.leaves = (res || []).map((leave) => ({
+        ...leave,
+        statusLabel: this.statusMap[leave.status] ?? leave.status,
+      }));
       this.applyFilters();
     });
   }
@@ -42,7 +51,8 @@ export class DashboardComponent implements OnInit {
   applyFilters() {
     this.filteredLeaves = this.leaves
       .filter((leave) => {
-        const matchesStatus = this.filters.status === 'All' || leave.status === this.filters.status;
+        const leaveStatus = typeof leave.status === 'number' ? leave.statusLabel : leave.status;
+        const matchesStatus = this.filters.status === 'All' || leaveStatus === this.filters.status;
         const matchesType = !this.filters.leaveTypeId || leave.leaveTypeId === +this.filters.leaveTypeId;
         const matchesFrom = !this.filters.fromDate || new Date(leave.startDate) >= new Date(this.filters.fromDate);
         const matchesTo = !this.filters.toDate || new Date(leave.endDate) <= new Date(this.filters.toDate);
@@ -53,7 +63,7 @@ export class DashboardComponent implements OnInit {
 
   compareLeaves(a: any, b: any) {
     if (this.filters.sortBy === 'status') {
-      return (a.status || '').localeCompare(b.status || '');
+      return (a.statusLabel || '').localeCompare(b.statusLabel || '');
     }
     if (this.filters.sortBy === 'endDate') {
       return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
