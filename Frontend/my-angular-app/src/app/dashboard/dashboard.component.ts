@@ -123,16 +123,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     if (this.filters.sortBy === 'endDate') {
-      return (
-        new Date(a.endDate).getTime() -
-        new Date(b.endDate).getTime()
-      );
+      return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
     }
 
-    return (
-      new Date(a.startDate).getTime() -
-      new Date(b.startDate).getTime()
-    );
+    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
   }
 
   getLeaveTypeName(typeId: number) {
@@ -146,7 +140,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.searchTerm.next(value);
   }
 
-  // ✅ SINGLE CORRECT IMPLEMENTATION
   getTypeBalance(typeId: number) {
     const used = this.leaves.filter(
       (leave) => Number(leave.leaveTypeId) === typeId
@@ -187,6 +180,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
+  // ✅ FIX ADDED HERE (THIS RESOLVES YOUR ERROR)
+  get approvedCount(): number {
+    return this.filteredLeaves?.filter(l => l.statusLabel === 'Approved').length || 0;
+  }
+
+  get rejectedCount(): number {
+    return this.filteredLeaves?.filter(l => l.statusLabel === 'Rejected').length || 0;
+  }
+
   resetFilters() {
     this.filters = {
       status: 'All',
@@ -194,7 +196,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       fromDate: '',
       toDate: '',
       sortBy: 'startDate',
-      search: '' // ✅ FIXED
+      search: ''
     };
     this.applyFilters();
   }

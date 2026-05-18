@@ -1,133 +1,240 @@
-<div class="dashboard-page container py-4">
-  <div class="dashboard-top row gy-4">
-    <div class="col-lg-4">
-      <div class="summary-card p-4 rounded-4 shadow-sm bg-white">
-        <div class="d-flex align-items-center justify-content-between mb-3">
+<div class="dashboard-wrapper container-fluid py-4">
+
+  <!-- TOP HEADER -->
+  <div class="row align-items-center mb-4">
+    <div class="col-md-8">
+      <h2 class="fw-bold mb-1">HR Leave Dashboard</h2>
+      <p class="text-muted mb-0">
+        Track, manage and analyze employee leave requests in real time
+      </p>
+    </div>
+
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+      <span class="badge bg-dark px-3 py-2 rounded-pill">
+        Leave Management System
+      </span>
+    </div>
+  </div>
+
+  <!-- STATS CARDS -->
+  <div class="row g-4 mb-4">
+
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card border-0 shadow-sm rounded-4 p-3">
+        <div class="d-flex justify-content-between">
           <div>
-            <p class="summary-label mb-1">Leave balance</p>
-            <h3 class="summary-value mb-0">{{ getTotalBalance() }}</h3>
+            <small class="text-muted">Total Balance</small>
+            <h4 class="fw-bold mb-0">{{ getTotalBalance() }}</h4>
           </div>
-          <span class="badge bg-primary">Total</span>
-        </div>
-        <div class="balance-grid">
-          <div *ngFor="let type of leaveTypeOptions" class="mb-3">
-            <div class="d-flex justify-content-between mb-1">
-              <span>{{ type.name }}</span>
-              <strong>{{ getTypeBalance(type.id) }} / {{ defaultBalances[type.id] || 0 }} days</strong>
-            </div>
-            <div class="progress" style="height: 0.75rem;">
-              <div
-                class="progress-bar"
-                role="progressbar"
-                [style.width.%]="getTypeBalancePercent(type.id)"
-                [class.bg-success]="getTypeBalancePercent(type.id) > 30"
-                [class.bg-warning]="getTypeBalancePercent(type.id) <= 30 && getTypeBalancePercent(type.id) > 0"
-                [class.bg-danger]="getTypeBalancePercent(type.id) === 0"
-              ></div>
-            </div>
+          <div class="icon bg-primary text-white rounded-3 p-3">
+            📊
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-lg-8">
-      <div class="filter-card p-4 rounded-4 shadow-sm bg-white">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card border-0 shadow-sm rounded-4 p-3">
+        <div class="d-flex justify-content-between">
           <div>
-            <h2 class="mb-1">Leave requests</h2>
-            <p class="text-muted mb-0">Filter and sort leave requests on the dashboard.</p>
+            <small class="text-muted">Pending Requests</small>
+            <h4 class="fw-bold mb-0">{{ filteredLeaves.length }}</h4>
           </div>
-          <div class="text-muted small">{{ filteredLeaves.length }} records</div>
-        </div>
-
-        <div class="row g-3 mb-4">
-          <div class="col-12">
-            <label class="form-label">Search</label>
-            <input
-              class="form-control"
-              placeholder="Search employee, type, or reason"
-              (input)="onSearchChange($any($event.target).value)"
-            />
+          <div class="icon bg-warning text-dark rounded-3 p-3">
+            ⏳
           </div>
         </div>
+      </div>
+    </div>
 
-        <form class="row g-3 mb-4" (ngSubmit)="applyFilters()">
-          <div class="col-md-4">
-            <label class="form-label">Status</label>
-            <select class="form-select" [(ngModel)]="filters.status" name="status" (change)="applyFilters()">
-              <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card border-0 shadow-sm rounded-4 p-3">
+        <div class="d-flex justify-content-between">
+          <div>
+            <small class="text-muted">Approved</small>
+            <h4 class="fw-bold mb-0">{{ approvedCount || 0 }}</h4>
+          </div>
+          <div class="icon bg-success text-white rounded-3 p-3">
+            ✔️
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card border-0 shadow-sm rounded-4 p-3">
+        <div class="d-flex justify-content-between">
+          <div>
+            <small class="text-muted">Rejected</small>
+            <h4 class="fw-bold mb-0">{{ rejectedCount || 0 }}</h4>
+          </div>
+          <div class="icon bg-danger text-white rounded-3 p-3">
+            ❌
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row g-4">
+
+    <!-- LEFT PANEL -->
+    <div class="col-lg-4">
+
+      <!-- BREAKDOWN CARD -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+
+        <h6 class="fw-bold mb-3">Leave Breakdown</h6>
+
+        <div *ngFor="let type of leaveTypeOptions" class="mb-3">
+
+          <div class="d-flex justify-content-between">
+            <small>{{ type.name }}</small>
+            <small class="fw-bold">
+              {{ getTypeBalance(type.id) }} / {{ defaultBalances[type.id] || 0 }}
+            </small>
+          </div>
+
+          <div class="progress mt-1" style="height: 8px; border-radius: 10px;">
+            <div class="progress-bar"
+                 [style.width.%]="getTypeBalancePercent(type.id)"
+                 [class.bg-success]="getTypeBalancePercent(type.id) > 50"
+                 [class.bg-warning]="getTypeBalancePercent(type.id) <= 50 && getTypeBalancePercent(type.id) > 20"
+                 [class.bg-danger]="getTypeBalancePercent(type.id) <= 20">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="col-lg-8">
+
+      <div class="card border-0 shadow-sm rounded-4 p-4">
+
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h5 class="fw-bold mb-0">Leave Requests</h5>
+            <small class="text-muted">Filter and manage employee requests</small>
+          </div>
+
+          <span class="badge bg-primary px-3 py-2 rounded-pill">
+            {{ filteredLeaves.length }} Records
+          </span>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="mb-3">
+          <input class="form-control form-control-lg rounded-3"
+                 placeholder="Search employee, reason, or type..."
+                 (input)="onSearchChange($any($event.target).value)">
+        </div>
+
+        <!-- FILTER BAR -->
+        <div class="row g-2 mb-3">
+
+          <div class="col-md-3">
+            <select class="form-select form-select-sm rounded-3"
+                    [(ngModel)]="filters.status"
+                    (change)="applyFilters()">
+              <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
             </select>
           </div>
 
-          <div class="col-md-4">
-            <label class="form-label">Leave type</label>
-            <select class="form-select" [(ngModel)]="filters.leaveTypeId" name="leaveTypeId" (change)="applyFilters()">
-              <option value="">All types</option>
-              <option *ngFor="let type of leaveTypeOptions" [value]="type.id">{{ type.name }}</option>
+          <div class="col-md-3">
+            <select class="form-select form-select-sm rounded-3"
+                    [(ngModel)]="filters.leaveTypeId"
+                    (change)="applyFilters()">
+              <option value="">All Types</option>
+              <option *ngFor="let t of leaveTypeOptions" [value]="t.id">
+                {{ t.name }}
+              </option>
             </select>
           </div>
 
-          <div class="col-md-4">
-            <label class="form-label">Sort by</label>
-            <select class="form-select" [(ngModel)]="filters.sortBy" name="sortBy" (change)="applyFilters()">
-              <option value="startDate">Start date</option>
-              <option value="endDate">End date</option>
+          <div class="col-md-3">
+            <select class="form-select form-select-sm rounded-3"
+                    [(ngModel)]="filters.sortBy"
+                    (change)="applyFilters()">
+              <option value="startDate">Start Date</option>
+              <option value="endDate">End Date</option>
               <option value="status">Status</option>
             </select>
           </div>
 
-          <div class="col-md-4">
-            <label class="form-label">From date</label>
-            <input class="form-control" type="date" [(ngModel)]="filters.fromDate" name="fromDate" (change)="applyFilters()">
+          <div class="col-md-3 text-end">
+            <button class="btn btn-outline-secondary btn-sm rounded-3 me-2"
+                    (click)="resetFilters()">
+              Reset
+            </button>
+            <button class="btn btn-primary btn-sm rounded-3"
+                    (click)="applyFilters()">
+              Apply
+            </button>
           </div>
 
-          <div class="col-md-4">
-            <label class="form-label">To date</label>
-            <input class="form-control" type="date" [(ngModel)]="filters.toDate" name="toDate" (change)="applyFilters()">
-          </div>
+        </div>
 
-          <div class="col-md-4 d-flex align-items-end justify-content-end">
-            <button type="button" class="btn btn-outline-secondary me-2" (click)="resetFilters()">Reset</button>
-            <button type="button" class="btn btn-primary" (click)="applyFilters()">Apply</button>
-          </div>
-        </form>
-
+        <!-- TABLE -->
         <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
+
+          <table class="table table-hover align-middle">
+
             <thead class="table-light">
               <tr>
                 <th>Employee</th>
                 <th>Type</th>
-                <th>Start date</th>
-                <th>End date</th>
+                <th>Start</th>
+                <th>End</th>
                 <th>Days</th>
                 <th>Status</th>
                 <th>Reason</th>
               </tr>
             </thead>
+
             <tbody>
+
               <tr *ngFor="let leave of filteredLeaves">
-                <td>{{ leave.employeeId || '—' }}</td>
+
+                <td class="fw-semibold">{{ leave.employeeId || '—' }}</td>
                 <td>{{ getLeaveTypeName(leave.leaveTypeId) }}</td>
                 <td>{{ leave.startDate | date:'mediumDate' }}</td>
                 <td>{{ leave.endDate | date:'mediumDate' }}</td>
-                <td>{{ leave.daysRequested || leave.daysRequested === 0 ? leave.daysRequested : '-' }}</td>
+                <td>{{ leave.daysRequested ?? '-' }}</td>
+
                 <td>
-                  <span class="badge" [ngClass]="{
-                    'bg-warning text-dark': leave.statusLabel === 'Pending',
-                    'bg-success': leave.statusLabel === 'Approved',
-                    'bg-danger': leave.statusLabel === 'Rejected'
-                  }">{{ leave.statusLabel || leave.status || 'Unknown' }}</span>
+                  <span class="badge px-3 py-2"
+                        [ngClass]="{
+                          'bg-warning text-dark': leave.statusLabel === 'Pending',
+                          'bg-success': leave.statusLabel === 'Approved',
+                          'bg-danger': leave.statusLabel === 'Rejected'
+                        }">
+                    {{ leave.statusLabel }}
+                  </span>
                 </td>
-                <td>{{ leave.reason || '—' }}</td>
+
+                <td class="text-muted">{{ leave.reason || '—' }}</td>
+
               </tr>
+
               <tr *ngIf="filteredLeaves.length === 0">
-                <td colspan="7" class="text-center text-muted py-4">No leave requests match the current filters.</td>
+                <td colspan="7" class="text-center text-muted py-4">
+                  No leave requests found
+                </td>
               </tr>
+
             </tbody>
           </table>
+
         </div>
+
       </div>
     </div>
+
   </div>
 </div>
