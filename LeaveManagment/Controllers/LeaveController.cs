@@ -33,9 +33,9 @@ namespace LeaveManagment.Controllers
         }
 
         [HttpPost("reject/{id}")]
-        public async Task<IActionResult> Reject(int id)
+        public async Task<IActionResult> Reject(int id, [FromBody] RejectLeaveDto dto)
         {
-            await _service.RejectLeaveAsync(id);
+            await _service.RejectLeaveAsync(id, dto?.Comment);
             return Ok("Rejected");
         }
 

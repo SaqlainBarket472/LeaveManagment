@@ -83,13 +83,14 @@ namespace LeaveManagement.Application.Services
             await _repo.SaveChangesAsync();
         }
 
-        public async Task RejectLeaveAsync(int requestId)
+        public async Task RejectLeaveAsync(int requestId, string? rejectionComment = null)
         {
             var request = await _repo.GetById(requestId);
 
             if (request == null)
                 throw new Exception("Request not found");
 
+            request.RejectionComment = rejectionComment;
             request.Status = LeaveStatus.Rejected;
 
             await _repo.SaveChangesAsync();

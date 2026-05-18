@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LeaveService } from '../core/services/leave.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 @Component({
   standalone: true,
@@ -20,7 +22,8 @@ export class DashboardComponent implements OnInit {
     leaveTypeId: '',
     fromDate: '',
     toDate: '',
-    sortBy: 'startDate'
+    sortBy: 'startDate',
+    search: ''
   };
 
   statusOptions = ['All', 'Pending', 'Approved', 'Rejected'];
@@ -36,6 +39,10 @@ export class DashboardComponent implements OnInit {
     2: 'Rejected'
   };
 
+  defaultBalances: Record<number, number> = { 1: 12, 2: 10, 3: 8 };
+  private searchTerm = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
   constructor(private service: LeaveService) {}
 
   ngOnInit() {
@@ -46,9 +53,16 @@ export class DashboardComponent implements OnInit {
       }));
       this.applyFilters();
     });
+
+    this.searchTerm.pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((term) => {
+      this.filters.search = term.trim();
+      this.applyFilters();
+    });
   }
 
   applyFilters() {
+    const searchQuery = this.filters.search?.toLowerCase().trim();
+
     this.filteredLeaves = this.leaves
       .filter((leave) => {
         const leaveStatus = typeof leave.status === 'number' ? leave.statusLabel : leave.status;
@@ -56,7 +70,13 @@ export class DashboardComponent implements OnInit {
         const matchesType = !this.filters.leaveTypeId || leave.leaveTypeId === +this.filters.leaveTypeId;
         const matchesFrom = !this.filters.fromDate || new Date(leave.startDate) >= new Date(this.filters.fromDate);
         const matchesTo = !this.filters.toDate || new Date(leave.endDate) <= new Date(this.filters.toDate);
-        return matchesStatus && matchesType && matchesFrom && matchesTo;
+        const matchesSearch =
+          !searchQuery ||
+          String(leave.employeeId).includes(searchQuery) ||
+          String(leave.reason || '').toLowerCase().includes(searchQuery) ||
+          this.getLeaveTypeName(leave.leaveTypeId).toLowerCase().includes(searchQuery);
+
+        return matchesStatus && matchesType && matchesFrom && matchesTo && matchesSearch;
       })
       .sort((a, b) => this.compareLeaves(a, b));
   }
@@ -73,6 +93,26 @@ export class DashboardComponent implements OnInit {
 
   getLeaveTypeName(typeId: number) {
     return this.leaveTypeOptions.find((type) => type.id === typeId)?.name || 'Unknown';
+  }
+
+  onSearchChange(value: string) {
+    this.searchTerm.next(value);
+  }
+
+  getTypeBalance(typeId: number) {
+    const used = this.leaves.filter((leave) => Number(leave.leaveTypeId) === typeId).length;
+    return Math.max(0, (this.defaultBalances[typeId] || 0) - used);
+  }
+
+  getTypeBalancePercent(typeId: number) {
+    const available = this.defaultBalances[typeId] || 0;
+    const remaining = this.getTypeBalance(typeId);
+    return available > 0 ? Math.round((remaining / available) * 100) : 0;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   getTotalBalance() {

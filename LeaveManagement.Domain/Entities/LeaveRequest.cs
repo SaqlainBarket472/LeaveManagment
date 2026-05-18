@@ -16,6 +16,7 @@
         public LeaveStatus Status { get; set; }
         public string AddedBy { get; set; }
         public DateTime AddedDate { get; set; }
+        public string? RejectionComment { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
     }

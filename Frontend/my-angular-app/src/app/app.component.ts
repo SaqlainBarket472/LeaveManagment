@@ -11,7 +11,8 @@ import { RouterModule } from '@angular/router';
     <nav>
       <a routerLink="/">Dashboard</a> |
       <a routerLink="/apply">Apply Leave</a> |
-      <a routerLink="/approval">Approval</a>
+      <a routerLink="/approval">Approval</a> |
+      <a routerLink="/leave-types">Leave Types</a>
     </nav>
 
     <hr>

@@ -1,18 +1,95 @@
-<h2>Approval Page</h2>
+<div class="approval-page container py-4">
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <div class="d-flex flex-column flex-md-row align-items-start justify-content-between gap-3">
+        <div>
+          <h2 class="mb-1">Leave approval</h2>
+          <p class="text-muted mb-0">Review pending requests, approve or reject individually, or apply bulk actions.</p>
+        </div>
+        <div class="d-flex flex-column gap-2 w-100 w-md-auto">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              [checked]="selectAll"
+              id="selectAll"
+              (change)="toggleSelectAll($event.target.checked)"
+            />
+            <label class="form-check-label" for="selectAll">Select all</label>
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-success btn-sm" [disabled]="selectedIds.size === 0" (click)="approveSelected()">Approve selected</button>
+            <button class="btn btn-danger btn-sm" [disabled]="selectedIds.size === 0" (click)="rejectSelected()">Reject selected</button>
+          </div>
+          <input
+            class="form-control form-control-sm"
+            placeholder="Bulk rejection comment"
+            [(ngModel)]="bulkRejectComment"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 
-<table border="1">
-  <tr>
-    <th>Start</th>
-    <th>End</th>
-    <th>Action</th>
-  </tr>
+  <div *ngIf="requests.length === 0" class="text-center text-muted py-4">
+    No pending leave requests available for approval.
+  </div>
 
-  <tr *ngFor="let r of requests">
-    <td>{{r.startDate}}</td>
-    <td>{{r.endDate}}</td>
-    <td>
-      <button (click)="approve(r.id)">Approve</button>
-      <button (click)="reject(r.id)">Reject</button>
-    </td>
-  </tr>
-</table>
+  <div *ngIf="requests.length > 0" class="table-responsive">
+    <table class="table table-hover align-middle bg-white rounded-4 shadow-sm">
+      <thead class="table-light">
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">ID</th>
+          <th scope="col">Employee</th>
+          <th scope="col">Leave type</th>
+          <th scope="col">Start date</th>
+          <th scope="col">End date</th>
+          <th scope="col">Days</th>
+          <th scope="col">Reason</th>
+          <th scope="col">Status</th>
+          <th scope="col">Rejection comment</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of requests">
+          <td>
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="selectedIds.has(r.id)"
+              (change)="toggleSelection(r.id, $event.target.checked)"
+            />
+          </td>
+          <td>{{ r.id }}</td>
+          <td>{{ r.employeeId }}</td>
+          <td>{{ r.leaveTypeId }}</td>
+          <td>{{ r.startDate | date:'mediumDate' }}</td>
+          <td>{{ r.endDate | date:'mediumDate' }}</td>
+          <td>{{ r.daysRequested }}</td>
+          <td>{{ r.reason || '-' }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'bg-warning text-dark': getStatusLabel(r.status) === 'Pending',
+              'bg-success': getStatusLabel(r.status) === 'Approved',
+              'bg-danger': getStatusLabel(r.status) === 'Rejected'
+            }">{{ getStatusLabel(r.status) }}</span>
+          </td>
+          <td>
+            <textarea
+              [(ngModel)]="comments[r.id]"
+              rows="2"
+              class="form-control"
+              placeholder="Optional rejection comment"
+            ></textarea>
+          </td>
+          <td class="d-flex flex-column gap-2">
+            <button class="btn btn-sm btn-success" (click)="approve(r.id)">Approve</button>
+            <button class="btn btn-sm btn-danger" (click)="reject(r.id)">Reject</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

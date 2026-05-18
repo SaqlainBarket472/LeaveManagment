@@ -9,11 +9,21 @@
           </div>
           <span class="badge bg-primary">Total</span>
         </div>
-        <div class="balance-grid row g-3">
-          <div class="col-12" *ngFor="let type of leaveTypeOptions">
-            <div class="balance-row d-flex align-items-center justify-content-between">
+        <div class="balance-grid">
+          <div *ngFor="let type of leaveTypeOptions" class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
               <span>{{ type.name }}</span>
-              <strong>{{ getTypeBalance(type.id) }} days</strong>
+              <strong>{{ getTypeBalance(type.id) }} / {{ defaultBalances[type.id] || 0 }} days</strong>
+            </div>
+            <div class="progress" style="height: 0.75rem;">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                [style.width.%]="getTypeBalancePercent(type.id)"
+                [class.bg-success]="getTypeBalancePercent(type.id) > 30"
+                [class.bg-warning]="getTypeBalancePercent(type.id) <= 30 && getTypeBalancePercent(type.id) > 0"
+                [class.bg-danger]="getTypeBalancePercent(type.id) === 0"
+              ></div>
             </div>
           </div>
         </div>
@@ -28,6 +38,17 @@
             <p class="text-muted mb-0">Filter and sort leave requests on the dashboard.</p>
           </div>
           <div class="text-muted small">{{ filteredLeaves.length }} records</div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="form-label">Search</label>
+            <input
+              class="form-control"
+              placeholder="Search employee, type, or reason"
+              (input)="onSearchChange($any($event.target).value)"
+            />
+          </div>
         </div>
 
         <form class="row g-3 mb-4" (ngSubmit)="applyFilters()">
