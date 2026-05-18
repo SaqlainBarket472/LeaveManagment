@@ -13,7 +13,7 @@ export class LeaveTypesComponent {
   leaveTypes: LeaveType[] = [
     { id: 1, name: 'Casual Leave', defaultBalance: 12, isAccrued: true },
     { id: 2, name: 'Sick Leave', defaultBalance: 10, isAccrued: false },
-    { id: 3, name: 'Personal Leave', defaultBalance: 8, isAccrued: false }
+    { id: 3, name: 'Annual Leave', defaultBalance: 8, isAccrued: false }
   ];
 
   formModel: LeaveType = this.createEmptyType();

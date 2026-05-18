@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   leaveTypeOptions = [
     { id: 1, name: 'Casual Leave' },
     { id: 2, name: 'Sick Leave' },
-    { id: 3, name: 'Personal Leave' }
+    { id: 3, name: 'Annual Leave' }
   ];
 
   statusMap: Record<number, string> = {
