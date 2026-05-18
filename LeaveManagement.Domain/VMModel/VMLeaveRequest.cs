@@ -9,7 +9,7 @@ namespace LeaveManagement.Domain.VMModel
     public class VMLeaveRequest
     {
         public int EmployeeId { get; set; }
-        public string? Status { get; set; }
+        public int? Status { get; set; }
         //public string? LeaveType { get; set; }
         public int? LeaveTypeId { get; set; }
         public DateTime? FromDate { get; set; }

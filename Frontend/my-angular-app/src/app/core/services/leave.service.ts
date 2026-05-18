@@ -22,14 +22,32 @@ export class LeaveService {
     return this.http.post(`${this.api}/reject/${id}`, { comment });
   }
 
-  getAll(filter: any = {}): Observable<LeaveRequest[]> {
-    const payload = { employeeId: 1, ...filter };
-    return this.http.post<LeaveRequest[]>(`${this.api}/GetLeaveRequests`, payload);
-  }
+getAll(filter: any = {}): Observable<LeaveRequest[]> {
 
-  getPendingRequests(filter: any = {}): Observable<LeaveRequest[]> {
-    return this.getAll({ status: 0, ...filter });
-  }
+  const payload = {
+    filter: {
+      employeeId: 1,
+      status: filter.status ?? null,
+      leaveTypeId: filter.leaveTypeId ?? null,
+      fromDate: filter.fromDate ?? null,
+      toDate: filter.toDate ?? null,
+      sortBy: filter.sortBy ?? 'AddedDate',
+      sortDir: filter.sortDir ?? 'desc'
+    }
+  };
+
+  return this.http.post<LeaveRequest[]>(
+    `${this.api}/GetLeaveRequests`,
+    payload
+  );
+}
+
+getPendingRequests(filter: any = {}): Observable<LeaveRequest[]> {
+  return this.getAll({
+    ...filter,
+    status: 0 // Pending
+  });
+}
 
   bulkApprove(ids: number[]) {
     if (!ids || ids.length === 0) {
