@@ -1,4 +1,5 @@
 ﻿using LeaveManagement.Domain.Entities;
+using LeaveManagement.Domain.VMModel;
 
 namespace LeaveManagement.Application.Interfaces
 {
@@ -9,5 +10,6 @@ namespace LeaveManagement.Application.Interfaces
         Task<bool> HasOverlap(int empId, DateTime start, DateTime end);
         Task<LeaveRequest> GetById(int id);
         Task SaveChangesAsync();
+        IQueryable<LeaveRequest> GetAll();
     }
 }

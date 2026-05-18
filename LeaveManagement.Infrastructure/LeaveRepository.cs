@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LeaveManagement.Application.Interfaces;
 using LeaveManagement.Domain.Entities;
+using LeaveManagement.Domain.VMModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagement.Infrastructure
@@ -47,5 +48,11 @@ namespace LeaveManagement.Infrastructure
         {
             await _context.SaveChangesAsync();
         }
+
+        public IQueryable<LeaveRequest> GetAll()
+        {
+            return _context.LeaveRequests.AsQueryable();
+        }
+
     }
 }

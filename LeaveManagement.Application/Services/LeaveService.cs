@@ -1,6 +1,10 @@
-﻿using LeaveManagement.Application.DTOs;
+﻿using Azure.Core;
+using LeaveManagement.Application.DTOs;
 using LeaveManagement.Application.Interfaces;
 using LeaveManagement.Domain.Entities;
+using LeaveManagement.Domain.VMModel;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LeaveManagement.Application.Services
 {
@@ -101,5 +105,34 @@ namespace LeaveManagement.Application.Services
 
             return count;
         }
+
+        public async Task<List<LeaveRequest>> GetLeaveRequestsAsync(VMLeaveRequest filter)
+        {
+            var query = _repo.GetAll();
+
+            // 🔎 Filtering
+            if (filter.EmployeeId > 0)
+                query = query.Where(x => x.EmployeeId == filter.EmployeeId);
+
+            if (filter.LeaveTypeId != 0)
+                query = query.Where(x => x.LeaveTypeId == filter.LeaveTypeId);
+
+            if (filter.FromDate.HasValue)
+                query = query.Where(x => x.StartDate >= filter.FromDate.Value);
+
+            if (filter.ToDate.HasValue)
+                query = query.Where(x => x.EndDate <= filter.ToDate.Value);
+
+            // 📊 Simple Sorting (AddedDate only)
+            if (filter.SortDir?.ToLower() == "asc")
+                query = query.OrderBy(x => x.AddedDate);
+            else
+                query = query.OrderByDescending(x => x.AddedDate);
+
+            return await query.ToListAsync();
+        }
     }
+
+
+
 }

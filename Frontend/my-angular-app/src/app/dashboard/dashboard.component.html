@@ -1,15 +1,108 @@
-<h2>Leave Dashboard</h2>
+<div class="dashboard-page container py-4">
+  <div class="dashboard-top row gy-4">
+    <div class="col-lg-4">
+      <div class="summary-card p-4 rounded-4 shadow-sm bg-white">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div>
+            <p class="summary-label mb-1">Leave balance</p>
+            <h3 class="summary-value mb-0">{{ getTotalBalance() }}</h3>
+          </div>
+          <span class="badge bg-primary">Total</span>
+        </div>
+        <div class="balance-grid row g-3">
+          <div class="col-12" *ngFor="let type of leaveTypeOptions">
+            <div class="balance-row d-flex align-items-center justify-content-between">
+              <span>{{ type.name }}</span>
+              <strong>{{ getTypeBalance(type.id) }} days</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<table border="1">
-  <tr>
-    <th>Start</th>
-    <th>End</th>
-    <th>Status</th>
-  </tr>
+    <div class="col-lg-8">
+      <div class="filter-card p-4 rounded-4 shadow-sm bg-white">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+          <div>
+            <h2 class="mb-1">Leave requests</h2>
+            <p class="text-muted mb-0">Filter and sort leave requests on the dashboard.</p>
+          </div>
+          <div class="text-muted small">{{ filteredLeaves.length }} records</div>
+        </div>
 
-  <tr *ngFor="let l of leaves">
-    <td>{{l.startDate}}</td>
-    <td>{{l.endDate}}</td>
-    <td>{{l.status}}</td>
-  </tr>
-</table>
+        <form class="row g-3 mb-4" (ngSubmit)="applyFilters()">
+          <div class="col-md-4">
+            <label class="form-label">Status</label>
+            <select class="form-select" [(ngModel)]="filters.status" name="status" (change)="applyFilters()">
+              <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Leave type</label>
+            <select class="form-select" [(ngModel)]="filters.leaveTypeId" name="leaveTypeId" (change)="applyFilters()">
+              <option value="">All types</option>
+              <option *ngFor="let type of leaveTypeOptions" [value]="type.id">{{ type.name }}</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Sort by</label>
+            <select class="form-select" [(ngModel)]="filters.sortBy" name="sortBy" (change)="applyFilters()">
+              <option value="startDate">Start date</option>
+              <option value="endDate">End date</option>
+              <option value="status">Status</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">From date</label>
+            <input class="form-control" type="date" [(ngModel)]="filters.fromDate" name="fromDate" (change)="applyFilters()">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">To date</label>
+            <input class="form-control" type="date" [(ngModel)]="filters.toDate" name="toDate" (change)="applyFilters()">
+          </div>
+
+          <div class="col-md-4 d-flex align-items-end justify-content-end">
+            <button type="button" class="btn btn-outline-secondary me-2" (click)="resetFilters()">Reset</button>
+            <button type="button" class="btn btn-primary" (click)="applyFilters()">Apply</button>
+          </div>
+        </form>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Employee</th>
+                <th>Type</th>
+                <th>Start date</th>
+                <th>End date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let leave of filteredLeaves">
+                <td>{{ leave.employeeId || '—' }}</td>
+                <td>{{ getLeaveTypeName(leave.leaveTypeId) }}</td>
+                <td>{{ leave.startDate | date:'mediumDate' }}</td>
+                <td>{{ leave.endDate | date:'mediumDate' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'bg-warning text-dark': leave.status === 'Pending',
+                    'bg-success': leave.status === 'Approved',
+                    'bg-danger': leave.status === 'Rejected'
+                  }">{{ leave.status || 'Unknown' }}</span>
+                </td>
+              </tr>
+              <tr *ngIf="filteredLeaves.length === 0">
+                <td colspan="5" class="text-center text-muted py-4">No leave requests match the current filters.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

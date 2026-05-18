@@ -1,7 +1,9 @@
 ﻿using LeaveManagement.Application.DTOs;
 using LeaveManagement.Application.Services;
+using LeaveManagement.Domain.VMModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagment.Controllers
 {
@@ -36,5 +38,14 @@ namespace LeaveManagment.Controllers
             await _service.RejectLeaveAsync(id);
             return Ok("Rejected");
         }
+
+        [HttpPost("GetLeaveRequests")]
+        public async Task<IActionResult> GetLeaveRequests(VMLeaveRequest filter)
+        {
+            var result = await _service.GetLeaveRequestsAsync(filter);
+            return Ok(result);         
+        }
+
     }
+
 }
