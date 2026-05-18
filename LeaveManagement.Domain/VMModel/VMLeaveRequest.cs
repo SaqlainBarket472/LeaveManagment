@@ -15,7 +15,7 @@ namespace LeaveManagement.Domain.VMModel
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
 
-        public string? SortBy { get; set; } = "CreatedAt"; // CreatedAt, FromDate
+        public string? SortBy { get; set; } = "AddedDate"; // CreatedAt, FromDate
         public string? SortDir { get; set; } = "desc"; // asc/desc
     }
 

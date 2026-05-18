@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApplyLeaveDto } from '../../shared/models/leave.model';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LeaveService {
@@ -21,7 +22,8 @@ export class LeaveService {
     return this.http.post(`${this.api}/reject/${id}`, {});
   }
 
-  getAll() {
-    return this.http.get<any[]>(`${this.api}`);
+  getAll(filter: any = {}) {
+    const payload = { employeeId: 1, ...filter };
+    return this.http.post<any[]>(`${this.api}/GetLeaveRequests`, payload);
   }
 }

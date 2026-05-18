@@ -23,6 +23,9 @@ namespace LeaveManagement.Application.Services
             {
                 if (dto.StartDate > dto.EndDate)
                     throw new Exception("StartDate cannot be greater than EndDate");
+                
+                if (string.IsNullOrEmpty(dto.Reason))
+                    throw new Exception("Please Enter Reason");
 
                 int days = CalculateDays(dto.StartDate, dto.EndDate);
 
@@ -57,7 +60,7 @@ namespace LeaveManagement.Application.Services
             }
            catch(Exception ex)
            {
-
+                throw ex;
            }
             return "Error";
         }
@@ -114,8 +117,8 @@ namespace LeaveManagement.Application.Services
             if (filter.EmployeeId > 0)
                 query = query.Where(x => x.EmployeeId == filter.EmployeeId);
 
-            if (filter.LeaveTypeId != 0)
-                query = query.Where(x => x.LeaveTypeId == filter.LeaveTypeId);
+                if (filter.LeaveTypeId.HasValue)
+                    query = query.Where(x => x.LeaveTypeId == filter.LeaveTypeId);
 
             if (filter.FromDate.HasValue)
                 query = query.Where(x => x.StartDate >= filter.FromDate.Value);
