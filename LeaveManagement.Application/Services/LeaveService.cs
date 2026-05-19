@@ -47,6 +47,7 @@ namespace LeaveManagement.Application.Services
                     EndDate = dto.EndDate,
                     DaysRequested = days,
                     Reason = dto.Reason,
+                    EmployeeName = dto.EmployeeName,
                     Status = LeaveStatus.Pending,
                     AddedBy = "Sheikh.saqlian@gmail.com",
                     AddedDate = DateTime.Now

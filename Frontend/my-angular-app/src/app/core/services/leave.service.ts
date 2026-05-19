@@ -1,67 +1,51 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApplyLeaveDto, LeaveRequest } from '../../shared/models/leave.model';
-import { forkJoin, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+export interface VMLeaveRequest {
+  employeeId: number;
+  status?: number;
+  leaveTypeId?: number;
+  fromDate?: string;
+  toDate?: string;
+  sortBy?: string;
+  sortDir?: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
 export class LeaveService {
 
-  private api = 'https://localhost:7206/api/leave';
+  private baseUrl = 'https://localhost:7206/api/leave';
 
   constructor(private http: HttpClient) {}
 
-  applyLeave(data: ApplyLeaveDto) {
-    return this.http.post(`${this.api}/apply`, data);
+  getLeaveRequests(payload: any): Observable<any[]> {
+    return this.http.post<any[]>(`${this.baseUrl}/GetLeaveRequests`, payload);
   }
 
-  approveLeave(id: number) {
-    return this.http.post(`${this.api}/approve/${id}`, {});
+  getPendingRequests(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/GetPendingRequests`);
   }
 
-  rejectLeave(id: number, comment: string = '') {
-    return this.http.post(`${this.api}/reject/${id}`, { comment });
+  approveLeave(id: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/Approve/${id}`, {});
   }
 
-getAll(filter: any = {}): Observable<LeaveRequest[]> {
-
-  const payload = {
-    filter: {
-      employeeId: 1,
-      status: filter.status ?? null,
-      leaveTypeId: filter.leaveTypeId ?? null,
-      fromDate: filter.fromDate ?? null,
-      toDate: filter.toDate ?? null,
-      sortBy: filter.sortBy ?? 'AddedDate',
-      sortDir: filter.sortDir ?? 'desc'
-    }
-  };
-
-  return this.http.post<LeaveRequest[]>(
-    `${this.api}/GetLeaveRequests`,
-    payload
-  );
-}
-
-getPendingRequests(filter: any = {}): Observable<LeaveRequest[]> {
-  return this.getAll({
-    ...filter,
-    status: 0 // Pending
-  });
-}
-
-  bulkApprove(ids: number[]) {
-    if (!ids || ids.length === 0) {
-      return of([]);
-    }
-
-    return forkJoin(ids.map((id) => this.approveLeave(id)));
+  rejectLeave(id: number, comment: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/Reject/${id}`, { comment });
   }
 
-  bulkReject(ids: number[], comment: string = '') {
-    if (!ids || ids.length === 0) {
-      return of([]);
-    }
+  bulkApprove(ids: number[]): Observable<any> {
+    return this.http.post(`${this.baseUrl}/BulkApprove`, ids);
+  }
 
-    return forkJoin(ids.map((id) => this.rejectLeave(id, comment)));
+  bulkReject(ids: number[], comment: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/BulkReject`, { ids, comment });
+  }
+
+  applyLeave(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/ApplyLeave`, data);
   }
 }

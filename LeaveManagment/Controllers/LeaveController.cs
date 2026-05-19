@@ -18,8 +18,8 @@ namespace LeaveManagment.Controllers
             _service = service;
         }
 
-        [HttpPost("apply")]
-        public async Task<IActionResult> Apply(ApplyLeaveDto dto)
+        [HttpPost("ApplyLeave")]
+        public async Task<IActionResult> ApplyLeave(ApplyLeaveDto dto)
         {
             var result = await _service.ApplyLeaveAsync(dto);
             return Ok(result);

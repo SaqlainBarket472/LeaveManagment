@@ -1,0 +1,72 @@
+<div class="container">
+
+  <!-- HEADER -->
+  <h2>Employee Dashboard</h2>
+
+  <!-- SUMMARY -->
+  <div class="card">
+    <h3>Total Leave Days</h3>
+    <h1>{{ totalLeaves }}</h1>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+
+    <select [(ngModel)]="selectedStatus">
+      <option [ngValue]="null">All Status</option>
+      <option [ngValue]="0">Pending</option>
+      <option [ngValue]="1">Approved</option>
+      <option [ngValue]="2">Rejected</option>
+    </select>
+
+    <select [(ngModel)]="selectedType">
+      <option [ngValue]="null">All Types</option>
+      <option [ngValue]="1">Casual</option>
+      <option [ngValue]="2">Sick</option>
+      <option [ngValue]="3">Annual</option>
+    </select>
+
+    <input type="date" [(ngModel)]="fromDate">
+    <input type="date" [(ngModel)]="toDate">
+
+    <button (click)="applyFilters()">Filter</button>
+    <button (click)="resetFilters()">Reset</button>
+  </div>
+
+  <!-- TABLE -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Duration</th>
+        <th>Days</th>
+        <th>Status</th>
+        <th>Applied</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let leave of leaves">
+        <td>{{ leave.id }}</td>
+        <td>{{ leave.leaveTypeId }}</td>
+
+        <td>
+          {{ leave.startDate | date }} -
+          {{ leave.endDate | date }}
+        </td>
+
+        <td>{{ leave.daysRequested }}</td>
+
+        <td>
+          <span [ngClass]="getStatusClass(leave.status)">
+            {{ getStatusText(leave.status) }}
+          </span>
+        </td>
+
+        <td>{{ leave.addedDate | date:'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

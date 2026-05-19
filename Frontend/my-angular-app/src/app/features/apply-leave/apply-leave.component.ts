@@ -18,10 +18,11 @@ interface Toast {
 })
 export class ApplyLeaveComponent {
 
-  model: any = {
-    employeeId: 1,
-    leaveTypeId: 1
-  };
+ model: any = {
+  employeeId: 1,
+  employeeName: 'Saqlain',   // ✅ ADDED
+  leaveTypeId: 1
+};
 
   toasts: Toast[] = [];
   isLoading = false;

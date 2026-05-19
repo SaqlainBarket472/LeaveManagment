@@ -42,6 +42,11 @@
           <input class="form-control form-input" type="number" [(ngModel)]="model.employeeId" name="employeeId" [disabled]="isLoading" min="1" required>
         </div>
 
+        <div class="mb-3">
+          <label>Employee Name</label>
+           <input type="text" [(ngModel)]="model.employeeName" class="form-control">
+        </div>
+
         <div class="col-md-6">
           <label class="form-label form-label-top">Start date</label>
           <input class="form-control form-input" type="date" [(ngModel)]="model.startDate" name="startDate" [disabled]="isLoading" required>
