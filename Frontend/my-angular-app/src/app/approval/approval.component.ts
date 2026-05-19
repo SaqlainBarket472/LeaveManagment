@@ -7,7 +7,8 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   selector: 'app-approval',
   imports: [CommonModule, FormsModule],
-  templateUrl: './approval.component.html'
+  templateUrl: './approval.component.html',
+  styleUrls: ['./approval.component.css']
 })
 export class ApprovalComponent implements OnInit {
 
@@ -27,10 +28,15 @@ export class ApprovalComponent implements OnInit {
     this.loadPending();
   }
 
-  // LOAD PENDING REQUESTS
+  // LOAD ONLY PENDING REQUESTS
   loadPending() {
     this.service.getPendingRequests({ employeeId: 1 }).subscribe(res => {
-      this.requests = res || [];
+
+      // ✅ FILTER ONLY PENDING
+      this.requests = (res || []).filter(r =>
+        r.status === 0 || r.status === 'Pending'
+      );
+
     });
   }
 
@@ -53,12 +59,11 @@ export class ApprovalComponent implements OnInit {
     });
   }
 
-  // BULK APPROVE (FIXED)
+  // BULK APPROVE
   approveSelected() {
     const ids = Array.from(this.selectedIds);
     if (!ids.length) return;
 
-    // ✅ FIX: send object instead of raw array
     this.service.bulkApprove({ ids }).subscribe(() => {
       this.requests = this.requests.filter(x => !this.selectedIds.has(x.id));
       this.selectedIds.clear();
@@ -66,7 +71,7 @@ export class ApprovalComponent implements OnInit {
     });
   }
 
-  // BULK REJECT (already correct)
+  // BULK REJECT
   rejectSelected() {
     const ids = Array.from(this.selectedIds);
     if (!ids.length) return;

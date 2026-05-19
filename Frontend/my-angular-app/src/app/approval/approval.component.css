@@ -1,0 +1,85 @@
+/* =========================
+   TABLE HEADER STYLING
+   ========================= */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* HEADER ROW */
+thead {
+  background-color: #eef2ff;  /* very light soft indigo */
+}
+
+thead th {
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #acadae;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* BODY ROWS */
+tbody td {
+  padding: 12px;
+  font-size: 14px;
+  color: #111827;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* ROW HOVER EFFECT */
+tbody tr:hover {
+  background-color: #f9fafb;
+  transition: 0.2s ease-in-out;
+}
+
+/* CHECKBOX ALIGNMENT */
+th input[type="checkbox"],
+td input[type="checkbox"] {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+/* STATUS BADGES */
+.status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.pending {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.status.approved {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.status.rejected {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+/* ACTION BUTTONS */
+button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.85;
+}
