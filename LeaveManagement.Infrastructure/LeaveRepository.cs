@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Core;
+using LeaveManagement.Application.DTOs;
 using LeaveManagement.Application.Interfaces;
 using LeaveManagement.Domain.Entities;
 using LeaveManagement.Domain.VMModel;
@@ -52,6 +54,20 @@ namespace LeaveManagement.Infrastructure
         public IQueryable<LeaveRequest> GetAll()
         {
             return _context.LeaveRequests.AsQueryable();
+        }
+
+        public async Task<List<LeaveRequest>> GetLeaveRequestsByIdsAsync(BulkRejectRequest request)
+        {
+            return await _context.LeaveRequests
+                .Where(x => request.Ids.Contains(x.Id))
+                .ToListAsync();
+        }
+
+        public async Task<List<LeaveRequest>> GetLeaveApproveRequestsByIdsAsync(List<int> ids)
+        {
+            return await _context.LeaveRequests
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync();
         }
 
     }

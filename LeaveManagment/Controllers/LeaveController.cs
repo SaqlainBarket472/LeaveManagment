@@ -45,7 +45,51 @@ namespace LeaveManagment.Controllers
             var result = await _service.GetLeaveRequestsAsync(filter);
             return Ok(result);         
         }
+        
+        [HttpPost("GetPendingRequests")]
+        public async Task<IActionResult> GetPendingRequests(VMLeaveRequest filter)
+        {
+            var result = await _service.GetLeaveRequestsAsync(filter);
+            return Ok(result);         
+        }
 
+        [HttpPost("BulkReject")]
+        public async Task<IActionResult> BulkReject([FromBody] BulkRejectRequest request)
+        {
+            if (request.Ids == null || !request.Ids.Any())
+            {
+                return BadRequest("No leave IDs provided");
+            }
+
+            var result = await _service.BulkRejectAsync(request);
+
+            if (!result)
+                return NotFound("No matching leave requests found");
+
+            return Ok(new
+            {
+                message = "Selected leave requests rejected successfully"
+            });
+        }
+
+        [HttpPost("BulkApprove")]
+        public async Task<IActionResult> BulkApprove([FromBody] BulkApproveRequest request)
+        {
+            if (request == null || request.Ids == null || !request.Ids.Any())
+            {
+                return BadRequest("No leave IDs provided");
+            }
+
+            var result = await _service.BulkApprovedAsync(request);
+
+            if (!result)
+                return NotFound("No matching leave requests found");
+
+            return Ok(new
+            {
+                message = "Selected leave requests approved successfully"
+            });
+        }
     }
 
 }

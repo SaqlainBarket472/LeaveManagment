@@ -1,4 +1,5 @@
-﻿using LeaveManagement.Domain.Entities;
+﻿using LeaveManagement.Application.DTOs;
+using LeaveManagement.Domain.Entities;
 using LeaveManagement.Domain.VMModel;
 
 namespace LeaveManagement.Application.Interfaces
@@ -11,5 +12,7 @@ namespace LeaveManagement.Application.Interfaces
         Task<LeaveRequest> GetById(int id);
         Task SaveChangesAsync();
         IQueryable<LeaveRequest> GetAll();
+        Task<List<LeaveRequest>> GetLeaveRequestsByIdsAsync(BulkRejectRequest request);
+        Task<List<LeaveRequest>> GetLeaveApproveRequestsByIdsAsync(List<int> ids);
     }
 }

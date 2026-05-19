@@ -3,6 +3,11 @@
   <!-- HEADER -->
   <h2>Employee Dashboard</h2>
 
+  <!-- ✅ EMPLOYEE NAME HEADER -->
+  <h4 class="text-primary">
+    Welcome, {{ employeeName }}
+  </h4>
+
   <!-- SUMMARY -->
   <div class="card">
     <h3>Total Leave Days</h3>
@@ -31,24 +36,33 @@
 
     <button (click)="applyFilters()">Filter</button>
     <button (click)="resetFilters()">Reset</button>
+
+    <!-- optional sorting button -->
+    <button (click)="sortByDate()">Sort by Date</button>
+
   </div>
 
   <!-- TABLE -->
-  <table>
+  <table class="table table-bordered">
+
     <thead>
       <tr>
-        <th>ID</th>
+        <th>Employee Name</th> <!-- ✅ NEW COLUMN -->
         <th>Type</th>
         <th>Duration</th>
         <th>Days</th>
         <th>Status</th>
-        <th>Applied</th>
+        <th>Applied Date</th>
       </tr>
     </thead>
 
     <tbody>
-      <tr *ngFor="let leave of leaves">
-        <td>{{ leave.id }}</td>
+      <tr *ngFor="let leave of filteredLeaves">
+
+
+        <!-- ✅ EMPLOYEE NAME -->
+        <td>{{ leave.employeeName }}</td>
+
         <td>{{ leave.leaveTypeId }}</td>
 
         <td>
@@ -65,8 +79,10 @@
         </td>
 
         <td>{{ leave.addedDate | date:'short' }}</td>
+
       </tr>
     </tbody>
+
   </table>
 
 </div>

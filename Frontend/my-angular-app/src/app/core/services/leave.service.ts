@@ -25,8 +25,12 @@ export class LeaveService {
     return this.http.post<any[]>(`${this.baseUrl}/GetLeaveRequests`, payload);
   }
 
-  getPendingRequests(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/GetPendingRequests`);
+  // ✅ FIXED: NOW POST (was GET)
+  getPendingRequests(payload: any): Observable<any[]> {
+    return this.http.post<any[]>(
+      `${this.baseUrl}/GetPendingRequests`,
+      payload
+    );
   }
 
   approveLeave(id: number): Observable<any> {
@@ -37,10 +41,12 @@ export class LeaveService {
     return this.http.post(`${this.baseUrl}/Reject/${id}`, { comment });
   }
 
-  bulkApprove(ids: number[]): Observable<any> {
-    return this.http.post(`${this.baseUrl}/BulkApprove`, ids);
-  }
-
+  bulkApprove(payload: { ids: number[] }) {
+  return this.http.post(
+    `${this.baseUrl}/BulkApprove`,
+    payload
+  );
+}
   bulkReject(ids: number[], comment: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/BulkReject`, { ids, comment });
   }

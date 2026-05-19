@@ -1,95 +1,114 @@
-<div class="approval-page container py-4">
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <div class="d-flex flex-column flex-md-row align-items-start justify-content-between gap-3">
-        <div>
-          <h2 class="mb-1">Leave approval</h2>
-          <p class="text-muted mb-0">Review pending requests, approve or reject individually, or apply bulk actions.</p>
-        </div>
-        <div class="d-flex flex-column gap-2 w-100 w-md-auto">
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              [checked]="selectAll"
-              id="selectAll"
-              (change)="toggleSelectAll($event.target.checked)"
-            />
-            <label class="form-check-label" for="selectAll">Select all</label>
-          </div>
-          <div class="d-flex flex-wrap gap-2">
-            <button class="btn btn-success btn-sm" [disabled]="selectedIds.size === 0" (click)="approveSelected()">Approve selected</button>
-            <button class="btn btn-danger btn-sm" [disabled]="selectedIds.size === 0" (click)="rejectSelected()">Reject selected</button>
-          </div>
-          <input
-            class="form-control form-control-sm"
-            placeholder="Bulk rejection comment"
-            [(ngModel)]="bulkRejectComment"
-          />
-        </div>
-      </div>
-    </div>
+<div class="container">
+
+  <!-- HEADER -->
+  <h2 class="mb-3">Leave Approval Panel</h2>
+
+  <!-- SEARCH -->
+  <div class="mb-2">
+    <input type="text"
+           [(ngModel)]="searchText"
+           placeholder="Search employee / leave type..."
+           class="form-control">
   </div>
 
-  <div *ngIf="requests.length === 0" class="text-center text-muted py-4">
-    No pending leave requests available for approval.
+  <!-- BULK ACTIONS -->
+  <div class="mb-3">
+
+    <button class="btn btn-success me-2"
+            (click)="approveSelected()">
+      Approve Selected
+    </button>
+
+    <button class="btn btn-danger me-2"
+            (click)="rejectSelected()">
+      Reject Selected
+    </button>
+
+    <input type="text"
+           [(ngModel)]="bulkRejectComment"
+           class="form-control mt-2"
+           placeholder="Bulk reject comment">
   </div>
 
-  <div *ngIf="requests.length > 0" class="table-responsive">
-    <table class="table table-hover align-middle bg-white rounded-4 shadow-sm">
-      <thead class="table-light">
+  <!-- TABLE -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+
+      <thead class="table-dark">
         <tr>
-          <th scope="col"></th>
-          <th scope="col">ID</th>
-          <th scope="col">Employee</th>
-          <th scope="col">Leave type</th>
-          <th scope="col">Start date</th>
-          <th scope="col">End date</th>
-          <th scope="col">Days</th>
-          <th scope="col">Reason</th>
-          <th scope="col">Status</th>
-          <th scope="col">Rejection comment</th>
-          <th scope="col">Action</th>
+
+          <!-- SELECT ALL -->
+          <th>
+            <input type="checkbox"
+                   (change)="toggleSelectAll($event.target.checked)">
+          </th>
+
+          <th>Employee Name</th>
+          <th>Leave Type</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Status</th>
+          <th>Rejection Comment</th>
+          <th>Actions</th>
+
         </tr>
       </thead>
+
       <tbody>
+
         <tr *ngFor="let r of requests">
+
+          <!-- SELECT -->
           <td>
-            <input
-              type="checkbox"
-              class="form-check-input"
-              [checked]="selectedIds.has(r.id)"
-              (change)="toggleSelection(r.id, $event.target.checked)"
-            />
+            <input type="checkbox"
+                   (change)="toggleSelection(r.id, $event.target.checked)">
           </td>
-          <td>{{ r.id }}</td>
-          <td>{{ r.employeeId }}</td>
+
+          <!-- EMPLOYEE -->
+          <td>{{ r.employeeName }}</td>
+
+          <!-- TYPE -->
           <td>{{ r.leaveTypeId }}</td>
-          <td>{{ r.startDate | date:'mediumDate' }}</td>
-          <td>{{ r.endDate | date:'mediumDate' }}</td>
-          <td>{{ r.daysRequested }}</td>
-          <td>{{ r.reason || '-' }}</td>
+
+          <!-- DATES -->
+          <td>{{ r.startDate | date:'shortDate' }}</td>
+          <td>{{ r.endDate | date:'shortDate' }}</td>
+
+          <!-- STATUS -->
           <td>
-            <span class="badge" [ngClass]="{
-              'bg-warning text-dark': getStatusLabel(r.status) === 'Pending',
-              'bg-success': getStatusLabel(r.status) === 'Approved',
-              'bg-danger': getStatusLabel(r.status) === 'Rejected'
-            }">{{ getStatusLabel(r.status) }}</span>
+            <span [ngClass]="getStatusLabel(r.status)">
+              {{ getStatusLabel(r.status) }}
+            </span>
           </td>
+
+          <!-- COMMENT -->
           <td>
-            <textarea
-              [(ngModel)]="comments[r.id]"
-              rows="2"
-              class="form-control"
-              placeholder="Optional rejection comment"
-            ></textarea>
+            <input type="text"
+                   class="form-control"
+                   [(ngModel)]="comments[r.id]"
+                   placeholder="Reason (if rejecting)">
           </td>
-          <td class="d-flex flex-column gap-2">
-            <button class="btn btn-sm btn-success" (click)="approve(r.id)">Approve</button>
-            <button class="btn btn-sm btn-danger" (click)="reject(r.id)">Reject</button>
+
+          <!-- ACTIONS -->
+          <td>
+
+            <button class="btn btn-sm btn-success me-1"
+                    (click)="approve(r.id)">
+              Approve
+            </button>
+
+            <button class="btn btn-sm btn-danger"
+                    (click)="reject(r.id)">
+              Reject
+            </button>
+
           </td>
+
         </tr>
+
       </tbody>
+
     </table>
   </div>
+
 </div>

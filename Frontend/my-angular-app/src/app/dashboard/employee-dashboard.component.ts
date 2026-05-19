@@ -13,7 +13,10 @@ import { LeaveService, VMLeaveRequest } from '../core/services/leave.service';
 export class EmployeeDashboardComponent implements OnInit {
 
   leaves: any[] = [];
-  filteredLeaves: any[] = []; // ✅ ADDED
+  filteredLeaves: any[] = [];
+
+  // ✅ Employee Name for UI header
+  employeeName: string = '';
 
   // Filters
   selectedStatus: number | null = null;
@@ -45,7 +48,13 @@ export class EmployeeDashboardComponent implements OnInit {
       .subscribe({
         next: (res: any[]) => {
           this.leaves = res;
-          this.filteredLeaves = res; // ✅ ADDED (frontend working copy)
+          this.filteredLeaves = res;
+
+          // ✅ Set employee name from API response
+          if (res && res.length > 0) {
+            this.employeeName = res[0].employeeName || 'Employee';
+          }
+
           this.calculateSummary();
         },
         error: (err) => {
@@ -80,7 +89,7 @@ export class EmployeeDashboardComponent implements OnInit {
     this.fetchLeaves();
   }
 
-  // ✅ ADDED: sort function (frontend sorting)
+  // ✅ frontend sorting
   sortByDate() {
     this.filteredLeaves.sort((a, b) =>
       new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime()

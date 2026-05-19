@@ -136,8 +136,42 @@ namespace LeaveManagement.Application.Services
 
             return await query.ToListAsync();
         }
+
+        public async Task<bool> BulkRejectAsync(BulkRejectRequest request)
+        {
+            var leaves = await _repo.GetLeaveRequestsByIdsAsync(request);
+
+            if (!leaves.Any())
+                return false;
+
+            foreach (var leave in leaves)
+            {
+                leave.Status = LeaveStatus.Rejected;
+                leave.RejectionComment = request.Comment;
+                leave.UpdatedDate = DateTime.UtcNow;
+                leave.UpdatedBy = "sheikh.saqlian@gmail.com";
+            }
+
+            await _repo.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> BulkApprovedAsync(BulkApproveRequest request)
+        {
+            var leaves = await _repo.GetLeaveApproveRequestsByIdsAsync(request.Ids);
+
+            if (!leaves.Any())
+                return false;
+
+            foreach (var leave in leaves)
+            {
+                leave.Status = LeaveStatus.Approved;
+                leave.RejectionComment = "Approved";
+                leave.UpdatedDate = DateTime.UtcNow;
+            }
+
+            await _repo.SaveChangesAsync();
+            return true;
+        }
     }
-
-
-
 }
